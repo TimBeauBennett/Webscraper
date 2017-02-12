@@ -4,24 +4,24 @@ from bs4 import BeautifulSoup
 
 # -- We use requests to get the html - it's stored as a 'Response' object
 r = requests.get("http://www.bom.gov.au/sa/forecasts/state.shtml")
-print(type(r))
+##print(type(r))
 
 
 # -- Now we convert the Response object to bytes using the content function
 r = r.content
-print(type(r))
+##print(type(r))
 
 
 # -- Now we use BS4 to create a BeautifulSoup object
 soup = BeautifulSoup(r, "html.parser")#.encode('ascii', 'ignore')
-print(type(soup))
+##print(type(soup))
 
 
 # -- Now we create a 'ResultSet' object with some part of the page - here the content
 ##content = soup.find_all(id="content")
 content = soup.find_all("p")
-print(type(content))
-print(len(content))
+##print(type(content))
+##print(len(content))
 
 forecasts = content[4:8]
 
@@ -51,7 +51,7 @@ for i in str_forecasts:
     else:
         print("You done broke it")
     
-    print('\n', day, i)
+    print('\n', day, "\t:", i)
     today += datetime.timedelta(days=1)
 
     
