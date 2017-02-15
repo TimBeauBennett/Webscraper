@@ -1,5 +1,4 @@
 import requests
-import datetime
 from bs4 import BeautifulSoup
 
 # -- We use requests to get the html - it's stored as a 'Response' object
@@ -19,40 +18,31 @@ soup = BeautifulSoup(r, "html.parser")#.encode('ascii', 'ignore')
 
 # -- Now we create a 'ResultSet' object with some part of the page - here the content
 ##content = soup.find_all(id="content")
+
+# -- Let's prepare the forecasts
 content = soup.find_all("p")
-##print(type(content))
-##print(len(content))
-
 forecasts = content[4:8]
-
 str_forecasts = []
 
 for i in forecasts:
     str_forecasts.append(str(i)[3:-4])
 
-today = datetime.date.today()
+
+# -- Let's do the same for the headings
+headings = soup.find_all("h2")
+days = headings[1:5]
+str_days = []
+
+for i in days:
+    str_days.append(str(i)[4:-5])
+
+
+
+count = 0
 
 for i in str_forecasts:
-
-    if today.isoweekday() == 1:
-        day = "Monday"
-    elif today.isoweekday() == 2:
-        day = "Tuesday"
-    elif today.isoweekday() == 3:
-        day = "Wednesday"
-    elif today.isoweekday() == 4:
-        day = "Thursday"
-    elif today.isoweekday() == 5:
-        day = "Friday"
-    elif today.isoweekday() == 6:
-        day = "Saturday"
-    elif today.isoweekday() == 7:
-        day = "Sunday"
-    else:
-        print("You done broke it")
-    
-    print('\n', day, "\t:", i)
-    today += datetime.timedelta(days=1)
+    print(str_days[count], ':\n\n', i, '\n')
+    count += 1
 
     
 
