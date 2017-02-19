@@ -1,25 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 
-# -- We use requests to get the html - it's stored as a 'Response' object
+##------------------------------------------------------------
+
 r = requests.get("http://www.bom.gov.au/sa/forecasts/state.shtml")
-##print(type(r))
-
-
-# -- Now we convert the Response object to bytes using the content function
 r = r.content
-##print(type(r))
+soup = BeautifulSoup(r, "html.parser")
 
-
-# -- Now we use BS4 to create a BeautifulSoup object
-soup = BeautifulSoup(r, "html.parser")#.encode('ascii', 'ignore')
-##print(type(soup))
-
-
-# -- Now we create a 'ResultSet' object with some part of the page - here the content
-##content = soup.find_all(id="content")
-
-# -- Let's prepare the forecasts
 content = soup.find_all("p")
 forecasts = content[4:8]
 str_forecasts = []
@@ -27,8 +14,6 @@ str_forecasts = []
 for i in forecasts:
     str_forecasts.append(str(i)[3:-4])
 
-
-# -- Let's do the same for the headings
 headings = soup.find_all("h2")
 days = headings[1:5]
 str_days = []
@@ -36,61 +21,107 @@ str_days = []
 for i in days:
     str_days.append(str(i)[4:-5])
 
-
-
 count = 0
 
 for i in str_forecasts:
-    print(str_days[count], ':\n\n', i, '\n')
+    print(str_days[count], ':')
+    print('\n')
+    print(i)
+    print('\n')
     count += 1
 
+##------------------------------------------------------------
+
 # -- Next we need to pull out the town temperatures we want
-# These are in a table, Pandas does this better, but Im gonna stick with BS4 to learn it better.
-# Revision on prior line -- BS4 is NOT the best for this -- pandas 100%
-# Also, Sometimes there is a 'min' and 'max' column, and sometimes just a 'max'
-# I'll probably have to write up a if clause there, eg:
-# if min print min -- else pass
-# print max
-#
-# The format I want is this:
-#
-# Adelaide  Min: 18 C   Max: 28 C   Partly Cloudy
-# Kadina    Min: 16 C   Max: 29 C   Partly Cloudy
-# Kingscote Min: 16 C   Max: 22 C   Possible Morning Shower
-#
-# etc.
-##
-##t = requests.get("http://www.bom.gov.au/sa/forecasts/towns.shtml")
-##t = t.content
-##soup2 = BeautifulSoup(t, "html.parser")
-##
-##table = soup2.find_all('table')
-####print((table))
-####rows = table.find_all('tr')
-##
-##for tr in table:
-##    td = tr.find_all('td')
-##    row = [i.text for i in td]
-##    print(row)
+
+##------------------------------------------------------------
 
 import pandas as pd
 
 dfs = pd.read_html("http://www.bom.gov.au/sa/forecasts/towns.shtml")
-for df in dfs:
-    print(df)
+
+Locations = [dfs[0].loc[0], dfs[2].loc[0], dfs[3].loc[0], dfs[8].loc[0], dfs[8].loc[2],
+             dfs[9].loc[1], dfs[10].loc[0], dfs[10].loc[2], dfs[11].loc[0], dfs[12].loc[0],
+             dfs[12].loc[2], dfs[13].loc[0], dfs[13].loc[1], dfs[14].loc[3]]
+
+for i in Locations:
+    if i['Location'] == 'Clare':
+        x = '\t\t'
+    elif i['Location'] == 'Kimba':
+        x = '\t\t'
+    elif i['Location'] == 'Ceduna':
+        x = '\t\t'
+    else:
+        x = '\t'
+
+    if str(i['Min.']) == 'nan':
+        Min1 = ''
+        Min2 = ''
+    else:
+        Min1 = 'Min:'
+        Min2 = i['Min.']
+        
+    print(i['Location'], x, Min1, Min2, '\tMax:', i['Max.'], '\t', i['Summary'])
+
+# -------------------------------------------------------
+
+##site_list = ['http://www.bom.gov.au/sa/forecasts/far-west-coast.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/upper-west-coast.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/lower-west-coast.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/central-coast.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/spencer-gulf.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/investigator-strait.shtml,'
+##             'http://www.bom.gov.au/sa/forecasts/gulf-st-vincent.shtml',
+##             'http://www.bom.gov.au/sa/forecasts/south-central-coast.shtml',
+##             ]
+
+m = requests.get("http://www.bom.gov.au/sa/forecasts/far-west-coast.shtml")
+m = m.content
+soup2 = BeautifulSoup(m, 'html.parser')
+
+
+
+
+##def generate_forecast():
+##    
+##    for x in site_list:
+##        m = requests.get(x)
+
+
+region_raw = soup2.find_all("h1")
+region_raw = str(region_raw[0])[4:-5]
+region = region_raw.split(":")[0]
+
+marine_days = soup2.find_all("h2")
+marine_today = marine_days[1]
+marine_today_str = str(marine_today)[4:-5]
+
+marine_data = soup2.find_all("span")
+data_list = list(marine_data)[0:3]
+new_marine_list = []
+for d in data_list:
+    new_marine_list.append(str(d)[6:-7])
+
+print("\n")
+print(region, ":")
+print(marine_today_str, ':')
+print('Wind:\t', new_marine_list[0])
+print('Seas:\t', new_marine_list[1])
+print('Swell:\t', new_marine_list[2])
 
 
 
 
 
-#apparently I can't make a result set from a result set :(
-##sub_content = content.find_all("p")
-##print(type(sub_content))
-
-##print(sub_content)
-##
-##print(len(sub_content))
 
 
 
-#print(links)
+
+
+
+
+
+
+
+
+
