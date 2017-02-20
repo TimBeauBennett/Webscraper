@@ -76,6 +76,12 @@ for i in Locations:
     string = i['Location'] + x + Min1 + Min2 + '\tMax: ' + i['Max.'] + '\t' + i['Summary'] + '\n'
     file.write(string)
 
+# Just adding the date the forecat was made here as well
+
+z = soup.find_all(class_="date")
+file.write('\n\n\t')
+file.write(z[0].text)
+
 #----------------------------------------
 
 # -- Now a multi-page parse for our maritime forecasts

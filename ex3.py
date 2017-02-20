@@ -6,6 +6,24 @@ file = open('SA_weather1.txt', 'w')
 
 ##------------------------------------------------------------
 
+w = requests.get("http://www.bom.gov.au/sa/warnings/")
+w = w.content
+wsoup = BeautifulSoup(w, "html.parser")
+
+warning_content = wsoup.find_all(id='content')
+wc = warning_content[0]
+
+warnings = wc.find_all("a")[1:]
+
+for w in warnings:
+
+    file.write(w.text)
+    file.write(":\nhttp://www.bom.gov.au")
+    file.write(w['href'])
+    file.write("\n\n")
+
+##------------------------------------------------------------
+
 r = requests.get("http://www.bom.gov.au/sa/forecasts/state.shtml")
 r = r.content
 soup = BeautifulSoup(r, "html.parser")
