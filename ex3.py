@@ -129,7 +129,7 @@ toaddress = 'bennett.tim@gmail.com'
 msg = MIMEMultipart()
 msg['From'] = fromaddress
 msg['To'] = toaddress
-msg['Subject'] = "The Best Weather Report!"
+msg['Subject'] = "Here is the weather"
 msg.attach(MIMEText(email_content))
 
 server = smtplib.SMTP('smtp.googlemail.com', 587)
