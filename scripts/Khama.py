@@ -6,24 +6,6 @@ file = open('Khama_weather.txt', 'w')
 
 ##------------------------------------------------------------
 
-w = requests.get("http://www.bom.gov.au/sa/warnings/")
-w = w.content
-wsoup = BeautifulSoup(w, "html.parser")
-
-warning_content = wsoup.find_all(id='content')
-wc = warning_content[0]
-
-warnings = wc.find_all("a")[1:]
-
-for w in warnings:
-
-    file.write(w.text)
-    file.write(":\nhttp://www.bom.gov.au")
-    file.write(w['href'])
-    file.write("\n\n")
-
-##------------------------------------------------------------
-
 r = requests.get("http://www.bom.gov.au/sa/forecasts/state.shtml")
 r = r.content
 soup = BeautifulSoup(r, "html.parser")
@@ -70,11 +52,16 @@ for i in Locations:
         Min1 = ''
         Min2 = ''
     else:
-        Min1 = 'Min: '
+        Min1 = 'Min:'
         Min2 = i['Min.']
         
-    string = i['Location'] + x + Min1 + Min2 + '\tMax: ' + i['Max.'] + '\t' + i['Summary'] + '\n'
+    string = i['Location'] + x + Min1 + Min2 + '\tMax:' + i['Max.'] + '\t' + i['Summary'] + '\n'
     file.write(string)
+
+##file.close()
+##file = open('Khama_weather.txt', 'r')
+##print(file.read())
+##file.close()
 
 #----------------------------------------
 
